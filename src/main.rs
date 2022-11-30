@@ -1,3 +1,21 @@
+mod day1;
+mod util;
+
+extern crate dotenv;
+
+use dotenv::dotenv;
+use std::env;
+
 fn main() {
-    println!("Hello, world!");
+
+    dotenv().ok();
+    let day_string = env::var("DAY").unwrap_or("1".to_string());
+    let day = day_string.parse::<i32>().expect("Wrong format for day variable");
+
+    println!("Hello, day {}!", day);
+
+    match day {
+        1 => day1::main(),
+        _ => {}
+    }
 }

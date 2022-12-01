@@ -1,4 +1,5 @@
 use crate::util;
+use itertools::Itertools;
 
 pub fn main() {
     let input = util::parse_int_lists("resources/day1.txt");
@@ -15,11 +16,10 @@ fn max_calories(calorie_lists: Vec<Vec<i32>>) -> i32 {
 }
 
 fn max_3_calories(calorie_lists: Vec<Vec<i32>>) -> i32 {
-    let mut calorie_totals = calorie_lists.iter()
+    calorie_lists
+        .into_iter()
         .map(|calorie_list| calorie_list.iter().sum())
-        .collect::<Vec<i32>>();
-    calorie_totals.sort_by(|a, b| b.cmp(a));
-    calorie_totals.iter()
+        .sorted_by_key(|x: &i32| -x)
         .take(3)
         .sum()
 }
@@ -32,8 +32,8 @@ mod tests {
     fn find_max_total_of_lists() {
         let calorie_lists: Vec<Vec<i32>> = vec![
             vec![43],
-            vec![2,20,22],
-            vec![1,1,1,1,1]
+            vec![2, 20, 22],
+            vec![1, 1, 1, 1, 1],
         ];
         assert_eq!(max_calories(calorie_lists), 44);
     }
@@ -51,12 +51,10 @@ mod tests {
     fn find_top_3_total_of_simple_lists() {
         let calorie_lists: Vec<Vec<i32>> = vec![
             vec![1],
-            vec![1,1,1,1],
-            vec![1,1],
-            vec![1,1,1],
+            vec![1, 1, 1, 1],
+            vec![1, 1],
+            vec![1, 1, 1],
         ];
         assert_eq!(max_3_calories(calorie_lists), 9);
     }
-
-
 }

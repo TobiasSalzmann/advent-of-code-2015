@@ -8,16 +8,16 @@ use dotenv::dotenv;
 use std::env;
 
 fn main() {
+    let day_string = env::args().nth(1).or_else(|| {
+        dotenv().ok();
+        env::var("DAY").ok()
+    }).unwrap_or("1".to_string());
 
-    dotenv().ok();
-    let day_string = env::var("DAY").unwrap_or("1".to_string());
     let day = day_string.parse::<i32>().expect("Wrong format for day variable");
-
-    println!("Hello, day {}!", day);
 
     match day {
         1 => day1::main(),
         2 => day2::main(),
-        _ => {}
+        _ => {println!("Not yet implemented 😅")}
     }
 }

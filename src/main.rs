@@ -1,5 +1,6 @@
 mod day1;
 mod util;
+mod day2;
 
 extern crate dotenv;
 
@@ -16,6 +17,7 @@ fn main() {
 
     match day {
         1 => day1::main(),
+        2 => day2::main(),
         _ => {}
     }
 }

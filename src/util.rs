@@ -18,18 +18,23 @@ pub fn parse_int_lists(file_path: &str) -> Vec<Vec<i32>> {
         .collect()
 }
 
+pub fn parse_strings(file_path: &str) -> Vec<String> {
+    let contents = fs::read_to_string(file_path).expect("File does not exists");
+    contents.lines()
+        .map(|s|s.to_string())
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
-    use std::fs::File;
     use std::io::Write;
-    use crate::util::{parse_int_lists};
+    use crate::util::{parse_int_lists, parse_strings};
     use tempfile::NamedTempFile;
 
     #[test]
-    fn parses_list() {
-
+    fn parses_int_lists() {
         let mut file: NamedTempFile = NamedTempFile::new().expect("Failed to create file");
-        file.write_all("43\n\n2\n20\n22\n\n1\n1\n1\n1\n1\n".as_bytes()).expect("Faile to write to file");
+        file.write_all("43\n\n2\n20\n22\n\n1\n1\n1\n1\n1\n".as_bytes()).expect("Failed to write to file");
         let filename = file.path().to_str().expect("Failed to get file path");
 
         let lists = parse_int_lists(filename);
@@ -39,7 +44,22 @@ mod tests {
             vec![2, 20, 22],
             vec![1, 1, 1, 1, 1],
         ];
-
         assert_eq!(lists, expected_lists);
+    }
+
+    #[test]
+    fn parses_strings() {
+        let mut file: NamedTempFile = NamedTempFile::new().expect("Failed to create file");
+        file.write_all("This\nis a\nFile!\n".as_bytes()).expect("Failed to write to file");
+        let filename = file.path().to_str().expect("Failed to get file path");
+
+        let strings = parse_strings(filename);
+
+        let expected_strings: Vec<String> = vec![
+            "This".to_string(),
+            "is a".to_string(),
+            "File!".to_string()
+        ];
+        assert_eq!(strings, expected_strings);
     }
 }

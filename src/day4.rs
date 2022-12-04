@@ -11,37 +11,51 @@ pub fn main() {
 
 fn count_encompassing_tasks(task_distribution: Vec<String>) -> usize {
     task_distribution.into_iter()
+        .map(|raw| parse_task_distribution(&raw))
         .filter(|tasks| is_encompassing(tasks))
         .count()
 }
 
-fn is_encompassing(tasks: &String) -> bool {
-    let (astart, aend, bstart, bend): (i32, i32, i32, i32) = tasks
-        .split(|c| c == '-' || c == ',')
-        .map(|s| s.parse().unwrap())
-        .collect_tuple().unwrap();
-    match astart.cmp(&bstart) {
-        Ordering::Less => {aend >= bend}
+fn is_encompassing(tasks: &TaskDistribution) -> bool {
+    match tasks.astart.cmp(&tasks.bstart) {
+        Ordering::Less => {tasks.aend >= tasks.bend}
         Ordering::Equal => {true}
-        Ordering::Greater => {bend >= aend}
+        Ordering::Greater => {tasks.bend >= tasks.aend}
     }
 }
 
 fn count_overlapping_tasks(task_distribution: Vec<String>) -> usize {
     task_distribution.into_iter()
+        .map(|raw| parse_task_distribution(&raw))
         .filter(|tasks| is_overlapping(tasks))
         .count()
 }
 
-fn is_overlapping(tasks: &String) -> bool {
+fn is_overlapping(tasks: &TaskDistribution) -> bool {
+    match tasks.astart.cmp(&tasks.bstart) {
+        Ordering::Less => {tasks.bstart <= tasks.aend}
+        Ordering::Equal => {true}
+        Ordering::Greater => {tasks.astart <= tasks.bend}
+    }
+}
+
+struct TaskDistribution {
+    astart: i32,
+    aend: i32,
+    bstart: i32,
+    bend: i32,
+}
+
+fn parse_task_distribution(tasks: &String) -> TaskDistribution {
     let (astart, aend, bstart, bend): (i32, i32, i32, i32) = tasks
         .split(|c| c == '-' || c == ',')
         .map(|s| s.parse().unwrap())
         .collect_tuple().unwrap();
-    match astart.cmp(&bstart) {
-        Ordering::Less => {bstart <= aend}
-        Ordering::Equal => {true}
-        Ordering::Greater => {astart <= bend}
+    TaskDistribution{
+        astart,
+        aend,
+        bstart,
+        bend
     }
 }
 

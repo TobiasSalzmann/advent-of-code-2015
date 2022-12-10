@@ -6,6 +6,7 @@ mod day4;
 mod day5;
 mod day6;
 mod day7;
+mod day8;
 
 extern crate dotenv;
 extern crate core;
@@ -29,6 +30,7 @@ fn main() {
         5 => day5::main(),
         6 => day6::main(),
         7 => day7::main(),
+        8 => day8::main(),
         _ => {println!("Not yet implemented 😅")}
     }
 }

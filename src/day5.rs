@@ -6,8 +6,8 @@ pub fn main() {
     let input = util::parse_strings("resources/day5.txt");
     let (stacks, moves) = parse_cargo(input);
 
-    println!("Day 5, Part 1: {:?} encompassing tasks", top_crates(stacks.clone(), moves.clone(), V9000));
-    println!("Day 5, Part 2: {:?} encompassing tasks", top_crates(stacks, moves, V9001));
+    println!("Day 5, Part 1: Top crates: {:?}", top_crates(stacks.clone(), moves.clone(), V9000));
+    println!("Day 5, Part 2: Top crates: {:?}", top_crates(stacks, moves, V9001));
 }
 
 fn parse_cargo(raw_cargo: Vec<String>) -> (Vec<Vec<char>>, Vec<Move>) {

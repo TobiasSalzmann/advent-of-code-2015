@@ -6,8 +6,8 @@ pub fn main() {
     let input = util::parse_strings("resources/day7.txt");
 
     let fs = reverse_engineer_file_system(input);
-    println!("Day 6, Part 1: {:?}", fs.clone().part_1());
-    println!("Day 6, Part 2: {:?}", fs.part_2());
+    println!("Day 7, Part 1: Directory size sum: {:?}", fs.clone().part_1());
+    println!("Day 7, Part 2: Deleted directory of size: {:?}", fs.part_2());
 }
 
 #[derive(PartialEq, Debug, Clone)]

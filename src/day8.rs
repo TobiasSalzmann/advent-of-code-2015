@@ -5,8 +5,8 @@ use crate::util::Grid;
 pub fn main() {
     let input = util::parse_grid("resources/day8.txt", |c| c.to_string().parse::<i32>().unwrap());
 
-    println!("Day 8, Part 1: \n{}", count_visible(&input));
-    println!("Day 8, Part 2: \n{}", maximum_scenic_score(&input));
+    println!("Day 8, Part 1: {}", count_visible(&input));
+    println!("Day 8, Part 2: {}", maximum_scenic_score(&input));
 }
 
 fn count_visible(trees: &Grid<i32>) -> i32 {

@@ -3,18 +3,19 @@ use crate::util;
 
 pub fn main() {
     let input = util::parse_strings("resources/day11.txt");
-    let mut monkeys = input
+    let monkeys = input
         .split(|s| s.is_empty())
         .map(|rm| parse_monkey(rm.to_vec()))
         .collect_vec();
 
     println!(
         "Day 11, Part 1: {:?} monkey business",
-        calculate_monkey_business(&mut monkeys, 20)
+        calculate_monkey_business(&mut monkeys.clone())
     );
+
     println!(
         "Day 11, Part 2: {:?} monkey business",
-        calculate_monkey_business(&mut monkeys, 10000)
+        calculate_monkey_business_2(&mut monkeys.clone())
     );
 }
 
@@ -69,10 +70,22 @@ fn parse_action(raw_monkey: &Vec<String>) -> Action {
     action
 }
 
-fn calculate_monkey_business(monkeys: &mut Vec<Monkey>, number_of_rounds: u32) -> u128 {
-    for _ in 0..number_of_rounds {
-        advance_round(monkeys)
+fn calculate_monkey_business(monkeys: &mut Vec<Monkey>) -> u128 {
+    for _ in 0..20 {
+        advance_round(monkeys, |w| w / 3)
     }
+    extract_monkey_business(monkeys)
+}
+
+fn calculate_monkey_business_2(monkeys: &mut Vec<Monkey>) -> u128 {
+    let modulus: i128 = monkeys.iter().map(|m| m.action.modulus).product();
+    for _ in 0..10000 {
+        advance_round(monkeys, |w| w % modulus)
+    }
+    extract_monkey_business(monkeys)
+}
+
+fn extract_monkey_business(monkeys: &Vec<Monkey>) -> u128 {
     monkeys.iter()
         .map(|m| m.items_inspected as u128)
         .sorted()
@@ -81,10 +94,10 @@ fn calculate_monkey_business(monkeys: &mut Vec<Monkey>, number_of_rounds: u32) -
         .product()
 }
 
-fn advance_round(monkeys: &mut Vec<Monkey>) {
+fn advance_round(monkeys: &mut Vec<Monkey>, modify_worry: impl Fn(i128) -> i128) {
     for i in 0..monkeys.len() {
         for item in monkeys[i].items.clone() {
-            let worry_level = monkeys[i].operation.apply(item) / 3;
+            let worry_level = modify_worry(monkeys[i].operation.apply(item));
             let target_monkey = monkeys[i].action.apply(worry_level);
             monkeys[target_monkey as usize].items.push(worry_level);
         }
@@ -93,20 +106,19 @@ fn advance_round(monkeys: &mut Vec<Monkey>) {
     }
 }
 
-
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Operator {
     Plus,
     Times,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 enum Operand {
     Old,
     Const(i128),
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct Inspection {
     operator: Operator,
     operand: Operand,
@@ -125,7 +137,7 @@ impl Inspection {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct Action {
     modulus: i128,
     true_target: i128,
@@ -143,7 +155,7 @@ impl Action {
 }
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 struct Monkey {
     items: Vec<i128>,
     operation: Inspection,
@@ -221,7 +233,7 @@ mod tests {
             },
         ];
 
-        advance_round(&mut start_monkeys);
+        advance_round(&mut start_monkeys, |w| w / 3);
 
         assert_eq!(start_monkeys[0].items, vec![20, 23, 27, 26]);
         assert_eq!(start_monkeys[1].items, vec![2080, 25, 167, 207, 401, 1046]);
@@ -258,7 +270,39 @@ mod tests {
             },
         ];
 
-        assert_eq!(calculate_monkey_business(&mut start_monkeys, 20), 10605);
+        assert_eq!(calculate_monkey_business(&mut start_monkeys), 10605);
+    }
+
+    #[test]
+    fn calculates_monkey_business_for_parsed_example_for_part_2() {
+        let mut start_monkeys = vec![
+            Monkey {
+                items: vec![79, 98],
+                operation: Inspection { operator: Times, operand: Const(19) },
+                action: Action { modulus: 23, true_target: 2, false_target: 3 },
+                items_inspected: 0,
+            },
+            Monkey {
+                items: vec![54, 65, 75, 74],
+                operation: Inspection { operator: Plus, operand: Const(6) },
+                action: Action { modulus: 19, true_target: 2, false_target: 0 },
+                items_inspected: 0,
+            },
+            Monkey {
+                items: vec![79, 60, 97],
+                operation: Inspection { operator: Times, operand: Old },
+                action: Action { modulus: 13, true_target: 1, false_target: 3 },
+                items_inspected: 0,
+            },
+            Monkey {
+                items: vec![74],
+                operation: Inspection { operator: Plus, operand: Const(3) },
+                action: Action { modulus: 17, true_target: 0, false_target: 1 },
+                items_inspected: 0,
+            },
+        ];
+
+        assert_eq!(calculate_monkey_business_2(&mut start_monkeys), 2713310158);
     }
 }
 

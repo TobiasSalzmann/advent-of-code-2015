@@ -23,6 +23,17 @@ fn main() {
 
     let day = day_string.parse::<i32>().expect("Wrong format for day variable");
 
+    if day == 0 {
+        for d in 1..=25 {
+            run(d);
+            println!()
+        }
+    } else {
+        run(day)
+    }
+}
+
+fn run(day: i32) {
     match day {
         1 => day1::main(),
         2 => day2::main(),
@@ -33,6 +44,6 @@ fn main() {
         7 => day7::main(),
         8 => day8::main(),
         11 => day11::main(),
-        _ => {println!("Not yet implemented 😅")}
+        other => { println!("Day {} not yet implemented 😅", other) }
     }
 }

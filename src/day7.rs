@@ -1,6 +1,4 @@
-use std::borrow::BorrowMut;
-use std::collections::HashSet;
-use itertools::{Itertools, PeekingNext};
+use itertools::Itertools;
 use crate::day7::FileSystemEntry::{Dir, File};
 use crate::util;
 
@@ -110,7 +108,7 @@ fn reverse_engineer_file_system(console: Vec<String>) -> FileSystemEntry {
     fs
 }
 
-fn create_if_not_exists(path: Vec<String>, new: FileSystemEntry, mut fs: &mut FileSystemEntry) {
+fn create_if_not_exists(path: Vec<String>, new: FileSystemEntry, fs: &mut FileSystemEntry) {
     match path.iter().next() {
         None => {
             if let Dir { entries, .. } = fs {
@@ -125,7 +123,7 @@ fn create_if_not_exists(path: Vec<String>, new: FileSystemEntry, mut fs: &mut Fi
                 }
                 None => {
                     if let Dir { entries, .. } = fs {
-                        let mut new_dir = Dir { name: fragment.clone(), entries: vec![] };
+                        let new_dir = Dir { name: fragment.clone(), entries: vec![] };
                         entries.push(new_dir);
                     }
                     create_if_not_exists(path, new, fs)

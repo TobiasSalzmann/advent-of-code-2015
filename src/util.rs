@@ -102,14 +102,16 @@ impl<T: Clone> Grid<T> {
         for x in self.min_x..=self.max_x - 1 {
             for y in self.min_y..=self.max_y {
                 if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x+1, y)) {
-                    v.push((a, b))
+                    v.push((a.clone(), b.clone()));
+                    v.push((b, a));
                 }
             }
         }
         for x in self.min_x..=self.max_x {
             for y in self.min_y..=self.max_y - 1 {
                 if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x, y+1)) {
-                    v.push((a, b))
+                    v.push((a.clone(), b.clone()));
+                    v.push((b, a));
                 }
             }
         }

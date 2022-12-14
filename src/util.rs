@@ -1,7 +1,8 @@
 use std::collections::HashMap;
-use std::fmt::{Display, Formatter};
+use std::fmt::{Debug, Display, Formatter};
 use std::fs;
 use std::slice::Iter;
+use std::str::FromStr;
 use itertools::{Itertools};
 
 pub fn parse_int_lists(file_path: &str) -> Vec<Vec<i32>> {
@@ -17,6 +18,13 @@ pub fn parse_strings(file_path: &str) -> Vec<String> {
     let contents = fs::read_to_string(file_path).expect("File does not exists");
     contents.lines()
         .map(|s| s.to_string())
+        .collect()
+}
+
+pub fn parse_from_strings<T: FromStr>(file_path: &str) -> Vec<T> where <T as FromStr>::Err: Debug {
+    let contents = fs::read_to_string(file_path).expect("File does not exists");
+    contents.lines()
+        .map(|s| s.parse().unwrap())
         .collect()
 }
 
@@ -56,18 +64,17 @@ impl<T> Grid<T> {
 }
 
 impl<T: Clone> Grid<T> {
-
-    pub fn value_at(&self, x: i32, y:i32) -> Option<T> {
+    pub fn value_at(&self, x: i32, y: i32) -> Option<T> {
         self.inner.get(&(x, y)).cloned()
     }
 
-    pub fn entry_at(&self, x: i32, y:i32) -> Option<((i32, i32), T)> {
+    pub fn entry_at(&self, x: i32, y: i32) -> Option<((i32, i32), T)> {
         self.inner.get(&(x, y)).map(|v| ((x, y), v.clone()))
     }
 
     pub fn entries(&self) -> Vec<((i32, i32), T)> {
         self.inner.iter()
-            .map(|(k,v)| (k.clone(), v.clone()))
+            .map(|(k, v)| (k.clone(), v.clone()))
             .collect_vec()
     }
 
@@ -97,11 +104,11 @@ impl<T: Clone> Grid<T> {
         self.dir(start_x, start_y, 0, -1)
     }
 
-    pub fn edges(&self) -> Vec<(((i32, i32), T),((i32, i32), T))>{
+    pub fn edges(&self) -> Vec<(((i32, i32), T), ((i32, i32), T))> {
         let mut v = vec![];
         for x in self.min_x..=self.max_x - 1 {
             for y in self.min_y..=self.max_y {
-                if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x+1, y)) {
+                if let (Some(a), Some(b)) = (self.entry_at(x, y), self.entry_at(x + 1, y)) {
                     v.push((a.clone(), b.clone()));
                     v.push((b, a));
                 }
@@ -109,7 +116,7 @@ impl<T: Clone> Grid<T> {
         }
         for x in self.min_x..=self.max_x {
             for y in self.min_y..=self.max_y - 1 {
-                if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x, y+1)) {
+                if let (Some(a), Some(b)) = (self.entry_at(x, y), self.entry_at(x, y + 1)) {
                     v.push((a.clone(), b.clone()));
                     v.push((b, a));
                 }
@@ -122,18 +129,17 @@ impl<T: Clone> Grid<T> {
 impl<T: Clone + Eq + PartialEq> Grid<T> {
     pub fn location_of(&self, value: &T) -> Option<(i32, i32)> {
         self.inner.iter()
-            .find(|((x, y),v)| *v == value)
+            .find(|((x, y), v)| *v == value)
             .map(|(k, _)| k.clone())
     }
 }
-
 
 
 impl<T: Display> Display for Grid<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for y in self.min_y..=self.max_y {
             for x in self.min_x..=self.max_x {
-                write!(f, "{}", self.inner.get(&(x, y)).map(|v|v.to_string()).unwrap_or(" ".to_string()))?;
+                write!(f, "{}", self.inner.get(&(x, y)).map(|v| v.to_string()).unwrap_or(" ".to_string()))?;
             }
             if y < self.max_y {
                 writeln!(f, "")?;

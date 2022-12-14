@@ -7,11 +7,11 @@ pub fn main() {
     let input: Vec<Command> = util::parse_from_strings("resources/day10.txt");
 
     println!(
-        "Day 11, Part 1: {:?}", part1(input.clone())
+        "Day 10, Part 1: {:?}", part1(input.clone())
     );
 
     println!(
-        "Day 11, Part 2:\n{}", part2(input)
+        "Day 10, Part 2:\n{}", part2(input)
     );
 }
 

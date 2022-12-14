@@ -7,6 +7,7 @@ mod day5;
 mod day6;
 mod day7;
 mod day8;
+mod day9;
 mod day10;
 mod day11;
 mod day12;
@@ -46,6 +47,7 @@ fn run(day: i32) {
         6 => day6::main(),
         7 => day7::main(),
         8 => day8::main(),
+        9 => day9::main(),
         10 => day10::main(),
         11 => day11::main(),
         12 => day12::main(),

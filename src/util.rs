@@ -61,6 +61,16 @@ impl<T: Clone> Grid<T> {
         self.inner.get(&(x, y)).cloned()
     }
 
+    pub fn entry_at(&self, x: i32, y:i32) -> Option<((i32, i32), T)> {
+        self.inner.get(&(x, y)).map(|v| ((x, y), v.clone()))
+    }
+
+    pub fn entries(&self) -> Vec<((i32, i32), T)> {
+        self.inner.iter()
+            .map(|(k,v)| (k.clone(), v.clone()))
+            .collect_vec()
+    }
+
     fn dir(&self, start_x: i32, start_y: i32, d_x: i32, d_y: i32) -> Vec<T> {
         (0..)
             .into_iter()
@@ -85,6 +95,33 @@ impl<T: Clone> Grid<T> {
 
     pub fn up(&self, start_x: i32, start_y: i32) -> Vec<T> {
         self.dir(start_x, start_y, 0, -1)
+    }
+
+    pub fn edges(&self) -> Vec<(((i32, i32), T),((i32, i32), T))>{
+        let mut v = vec![];
+        for x in self.min_x..=self.max_x - 1 {
+            for y in self.min_y..=self.max_y {
+                if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x+1, y)) {
+                    v.push((a, b))
+                }
+            }
+        }
+        for x in self.min_x..=self.max_x {
+            for y in self.min_y..=self.max_y - 1 {
+                if let (Some(a), Some(b)) = (self.entry_at(x,y), self.entry_at(x, y+1)) {
+                    v.push((a, b))
+                }
+            }
+        }
+        v
+    }
+}
+
+impl<T: Clone + Eq + PartialEq> Grid<T> {
+    pub fn location_of(&self, value: &T) -> Option<(i32, i32)> {
+        self.inner.iter()
+            .find(|((x, y),v)| *v == value)
+            .map(|(k, _)| k.clone())
     }
 }
 

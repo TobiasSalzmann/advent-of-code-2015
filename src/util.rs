@@ -1,6 +1,7 @@
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
 use std::fs;
+use std::ops::RangeInclusive;
 use std::slice::Iter;
 use std::str::FromStr;
 use itertools::{Itertools};
@@ -48,10 +49,7 @@ impl<T> Grid<T> {
             }
         }
 
-        let min_x = inner.keys().map(|k| k.0).min().unwrap();
-        let max_x = inner.keys().map(|k| k.0).max().unwrap();
-        let min_y = inner.keys().map(|k| k.1).min().unwrap();
-        let max_y = inner.keys().map(|k| k.1).max().unwrap();
+        let Bounds {min_x, max_x, min_y, max_y} = bounds(&inner);
 
         Grid {
             inner,
@@ -60,6 +58,27 @@ impl<T> Grid<T> {
             min_y,
             max_y,
         }
+    }
+}
+
+
+pub struct Bounds {
+    pub min_x: i32,
+    pub max_x: i32,
+    pub min_y: i32,
+    pub max_y: i32
+}
+
+pub fn bounds<T>(inner: &HashMap<(i32, i32), T>) -> Bounds {
+    let min_x = inner.keys().map(|k| k.0).min().unwrap();
+    let max_x = inner.keys().map(|k| k.0).max().unwrap();
+    let min_y = inner.keys().map(|k| k.1).min().unwrap();
+    let max_y = inner.keys().map(|k| k.1).max().unwrap();
+    Bounds {
+        min_x,
+        max_x,
+        min_y,
+        max_y,
     }
 }
 

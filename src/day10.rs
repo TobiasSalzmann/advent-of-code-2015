@@ -1,5 +1,5 @@
 use std::str::FromStr;
-use itertools::{fold, Itertools};
+use itertools::{Itertools};
 use crate::day10::Command::{AddX, NoOp};
 use crate::util;
 
@@ -70,7 +70,7 @@ impl FromStr for Command {
 
 #[cfg(test)]
 mod tests {
-    use crate::day13::*;
+    
 
     #[test]
     fn should_do_stuff() {}

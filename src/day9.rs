@@ -1,7 +1,5 @@
-use std::ops::Deref;
 use std::str::FromStr;
-use itertools::{fold, Itertools, repeat_n};
-use petgraph::visit::Walker;
+use itertools::{Itertools};
 use crate::util;
 
 pub fn main() {
@@ -108,7 +106,7 @@ impl FromStr for Action {
 
 #[cfg(test)]
 mod tests {
-    use crate::day9::*;
+    
 
     #[test]
     fn should_do_stuff() {}

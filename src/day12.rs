@@ -1,13 +1,13 @@
-use std::cmp::Ordering;
+
 use std::collections::HashMap;
-use std::process::id;
-use std::str::FromStr;
+
+
 use itertools::Itertools;
 use petgraph::algo::dijkstra;
-use petgraph::graph::{DiGraph, NodeIndex};
+
 use petgraph::prelude::DiGraphMap;
-use serde_json::{Error, Value};
-use serde_json::Value::{Array, Number};
+
+
 use crate::util;
 use crate::util::Grid;
 
@@ -60,8 +60,8 @@ fn level(c: &char) -> i32 {
 
 #[cfg(test)]
 mod tests {
-    use crate::day12::valid;
-    use crate::day13::*;
+    
+    
 
     #[test]
     fn should_do_stuff() {

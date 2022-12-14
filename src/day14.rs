@@ -1,8 +1,8 @@
 use std::collections::HashMap;
-use std::ops::Deref;
+
 use std::str::FromStr;
 use itertools::Itertools;
-use petgraph::visit::Walker;
+
 use crate::util;
 use crate::util::{bounds, Bounds};
 
@@ -11,24 +11,27 @@ pub fn main() {
 
 
     println!(
-        "Day 9, Part 1: {:?}", part(input.clone(), false)
+        "Day 9, Part 1: {:?}", part(input.clone(), false, false)
     );
 
     println!(
-        "Day 9, Part 2: {:?}", part(input.clone(), true)
+        "Day 9, Part 2: {:?}", part(input.clone(), true, false)
     );
 }
 
-fn part(input: Vec<RockFormation>, floor: bool) -> usize {
+fn part(input: Vec<RockFormation>, floor: bool, print: bool) -> usize {
     let mut map = make_map(input);
     fill(&mut map, floor);
-    // print_map(&map);
+    if print {
+        print_map(&map);
+    }
+
 
     let result = map.values().filter(|c| c == &&'o').count();
     result
 }
 
-fn fill(mut map: &mut HashMap<(i32, i32), char>, floor: bool) {
+fn fill(map: &mut HashMap<(i32, i32), char>, floor: bool) {
     let abyss = bounds(map).max_y + 2;
     let mut sand_vec = vec![(500, 0)];
     while extend(&mut sand_vec, map, abyss, floor) {
@@ -122,7 +125,7 @@ impl FromStr for RockFormation {
 
 #[cfg(test)]
 mod tests {
-    use crate::day14::*;
+    
 
     #[test]
     fn should_do_stuff() {}

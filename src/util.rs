@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::fmt::{Debug, Display, Formatter};
 use std::fs;
-use std::ops::RangeInclusive;
+
 use std::slice::Iter;
 use std::str::FromStr;
 use itertools::{Itertools};
@@ -91,12 +91,6 @@ impl<T: Clone> Grid<T> {
         self.inner.get(&(x, y)).map(|v| ((x, y), v.clone()))
     }
 
-    pub fn entries(&self) -> Vec<((i32, i32), T)> {
-        self.inner.iter()
-            .map(|(k, v)| (k.clone(), v.clone()))
-            .collect_vec()
-    }
-
     fn dir(&self, start_x: i32, start_y: i32, d_x: i32, d_y: i32) -> Vec<T> {
         (0..)
             .into_iter()
@@ -148,7 +142,7 @@ impl<T: Clone> Grid<T> {
 impl<T: Clone + Eq + PartialEq> Grid<T> {
     pub fn location_of(&self, value: &T) -> Option<(i32, i32)> {
         self.inner.iter()
-            .find(|((x, y), v)| *v == value)
+            .find(|((_x, _y), v)| *v == value)
             .map(|(k, _)| k.clone())
     }
 }

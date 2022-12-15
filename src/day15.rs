@@ -11,6 +11,25 @@ pub fn main() {
     println!(
         "Day 15, Part 1: {:?}", impossible_beacons(input.clone(), 2000000)
     );
+
+    println!(
+        "Day 15, Part 2: {:?}", distress_beacon_tuning_frequency(input.clone(), 4000000)
+    );
+}
+
+fn distress_beacon_tuning_frequency(sensors: Vec<Sensor>, max_y: i32) -> i64 {
+    for row in 0..=max_y {
+        let intervals = disjoint_intervals(&sensors, row);
+        if intervals.len() > 1 {
+            return calculate_frequency(intervals, row);
+        };
+    }
+    panic!("no frequency when all intervals are connected")
+}
+
+fn calculate_frequency(intervals: Vec<(i32, i32)>, y: i32) -> i64 {
+    let x: i64 = intervals[0].1 as i64 + 1;
+    x * 4000000 + (y as i64)
 }
 
 fn impossible_beacons(sensors: Vec<Sensor>, row: i32) -> i32 {
@@ -142,11 +161,10 @@ impl FromStr for Sensor {
 #[cfg(test)]
 mod tests {
     use itertools::Itertools;
-    use crate::day15::{impossible_beacons, Sensor};
+    use crate::day15::{distress_beacon_tuning_frequency, impossible_beacons, Sensor};
 
-    #[test]
-    fn should_do_stuff() {
-        let input: Vec<Sensor> = vec![
+    fn example_input() -> Vec<Sensor> {
+        vec![
             "Sensor at x=2, y=18: closest beacon is at x=-2, y=15".to_string(),
             "Sensor at x=9, y=16: closest beacon is at x=10, y=16".to_string(),
             "Sensor at x=13, y=2: closest beacon is at x=15, y=3".to_string(),
@@ -163,8 +181,20 @@ mod tests {
             "Sensor at x=20, y=1: closest beacon is at x=15, y=3".to_string(),
         ].iter()
             .map(|s| s.parse().unwrap())
-            .collect_vec();
+            .collect_vec()
+    }
+
+    #[test]
+    fn should_solve_part_1_on_example() {
+        let input: Vec<Sensor> = example_input();
 
         assert_eq!(impossible_beacons(input, 10), 26);
+    }
+
+    #[test]
+    fn should_solve_part_2_on_example() {
+        let input: Vec<Sensor> = example_input();
+
+        assert_eq!(distress_beacon_tuning_frequency(input, 20), 56000011);
     }
 }

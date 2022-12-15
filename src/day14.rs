@@ -11,11 +11,11 @@ pub fn main() {
 
 
     println!(
-        "Day 9, Part 1: {:?}", part(input.clone(), false, false)
+        "Day 14, Part 1: {:?}", part(input.clone(), false, false)
     );
 
     println!(
-        "Day 9, Part 2: {:?}", part(input.clone(), true, false)
+        "Day 14, Part 2: {:?}", part(input.clone(), true, false)
     );
 }
 

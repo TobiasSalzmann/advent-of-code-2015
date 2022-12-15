@@ -14,11 +14,11 @@ pub fn main() {
         .collect_vec();
 
     println!(
-        "Day 11, Part 1: Ordered packet sum: {:?}", sum_ordered_packets(packets.clone())
+        "Day 13, Part 1: Ordered packet sum: {:?}", sum_ordered_packets(packets.clone())
     );
 
     println!(
-        "Day 11, Part 2: Decoder key: {:?}", decoder_key(packets)
+        "Day 13, Part 2: Decoder key: {:?}", decoder_key(packets)
     );
 }
 

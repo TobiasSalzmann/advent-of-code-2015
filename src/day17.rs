@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+use itertools::Itertools;
 use crate::util;
 
 pub fn main() {
@@ -17,16 +19,32 @@ fn height_after(wind: String, number_of_rocks: usize) -> usize {
             _ => panic!("parse error")
         })
         .cycle();
-    for n in 0..number_of_rocks {
-        simulate_rock_fall(&mut tower, &rocks[n % rocks.len()], &mut wind_it);
-        // println!("Rock {}:", n);
-        // for row in tower.clone().iter().rev() {
-        //     let row_str: String = row.iter()
-        //         .map(|x| if x.clone() {'#'} else {'.'} )
-        //         .collect();
-        //     println!("{}", row_str)
-        // }
-        // println!()
+    let mut record: HashMap<String, (usize, usize)> = HashMap::new();
+
+    for rock_idx in 0..number_of_rocks {
+        simulate_rock_fall(&mut tower, &rocks[rock_idx % rocks.len()], &mut wind_it);
+        let x = 100;
+        if tower.len() >= x {
+            let tower_top = tower[(tower.len() - x)..tower.len()].iter()
+                .rev()
+                .map(|row| row.iter().map(|x| if x.clone() {'#'} else {'.'}).join("") )
+                .join("\n");
+            let current_tower_height = tower.len();
+            if record.contains_key(&tower_top) {
+                let (prefix_rocks, prefix_height) = record.get(&tower_top).unwrap().clone();
+                let cycle_rocks = rock_idx - prefix_rocks;
+                let cycle_height = current_tower_height - prefix_height;
+
+                let number_of_cycles = (number_of_rocks - prefix_rocks) / cycle_rocks;
+                let remaining_rocks = (number_of_rocks - prefix_rocks) % cycle_rocks;
+                let height_adjustment = number_of_cycles * cycle_height;
+
+                let prefix_suffix_height = height_after(wind.clone(), prefix_rocks + remaining_rocks);
+                return prefix_suffix_height + height_adjustment;
+            } else {
+                record.insert(tower_top, (rock_idx, current_tower_height));
+            }
+        }
     }
 
     tower.len()
@@ -111,5 +129,12 @@ mod tests {
         let wind = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>".to_string();
         let rocks = 2022;
         assert_eq!(height_after(wind, rocks), 3068);
+    }
+
+    #[test]
+    fn should_solve_using_cycles() {
+        let wind = ">>><<><>><<<>><>>><<<>>><<<><<<>><>><<>>".to_string();
+        let rocks = 1_000_000_000_000;
+        assert_eq!(height_after(wind, rocks), 1514285714288);
     }
 }

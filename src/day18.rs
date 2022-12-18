@@ -1,8 +1,7 @@
 use std::collections::HashSet;
 use itertools::Itertools;
-use petgraph::algo::{dijkstra, kosaraju_scc};
-use petgraph::graphmap::{DiGraphMap, UnGraphMap};
-use petgraph::visit::NodeCount;
+use petgraph::algo::kosaraju_scc;
+use petgraph::graphmap::UnGraphMap;
 
 use crate::util;
 
@@ -10,7 +9,6 @@ pub fn main() {
     let input: Vec<String> = util::parse_strings("resources/day18.txt");
 
     println!("Day 18, Part 1: {:?}", calculate_surface_area(input.clone()));
-
     println!("Day 18, Part 2: {:?}", calculate_exterior_surface_area(input.clone()));
 }
 

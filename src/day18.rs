@@ -114,7 +114,6 @@ struct Surrounds {
 
 #[cfg(test)]
 mod tests {
-    use itertools::Itertools;
     use crate::day18::*;
 
     #[test]

@@ -1,8 +1,8 @@
-use std::collections::HashMap;
+
 use std::str::FromStr;
-use itertools::{Itertools, min};
+use itertools::{Itertools};
 use pathfinding::prelude::astar;
-use petgraph::visit::Walker;
+
 use rayon::prelude::*;
 use crate::util;
 
@@ -129,7 +129,7 @@ const INFINITY: usize = 1_000_000_000;
 fn calc_time_to(current: usize, income: usize, target: usize) -> usize {
     if target <= current { return 0; }
     if income == 0 { return INFINITY; }
-    let missing = (target - current);
+    let missing = target - current;
     if missing % income == 0 {
         missing / income
     } else {
@@ -146,13 +146,6 @@ struct Resources {
 }
 
 impl Resources {
-    fn at_least(&self, other: &Resources) -> bool {
-        self.ore >= other.ore
-            && self.clay >= other.clay
-            && self.obsidian >= other.obsidian
-            && self.geode >= other.geode
-    }
-
     fn minus(&self, other: &Resources) -> Resources {
         Resources {
             ore: self.ore - other.ore,

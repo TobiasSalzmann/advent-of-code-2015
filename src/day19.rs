@@ -14,13 +14,13 @@ pub fn main() {
 }
 
 fn total_quality(blueprints: Vec<Blueprint>) -> usize {
-    blueprints.iter()
+    blueprints.par_iter()
         .map(|b| max_geodes(b, 24) * b.index)
         .sum()
 }
 
 fn geodes_product(blueprints: Vec<Blueprint>) -> usize {
-    blueprints.iter()
+    blueprints.par_iter()
         .take(3)
         .map(|b| max_geodes(b, 32))
         .product()

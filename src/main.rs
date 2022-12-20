@@ -25,6 +25,7 @@ extern crate core;
 
 use dotenv::dotenv;
 use std::env;
+use std::time::Instant;
 
 fn main() {
     let day_string = env::args().nth(1).or_else(|| {
@@ -36,15 +37,16 @@ fn main() {
 
     if day == 0 {
         for d in 1..=25 {
-            run(d);
+            run(d, env::var("TIME").is_ok());
             println!()
         }
     } else {
-        run(day)
+        run(day, env::var("TIME").is_ok())
     }
 }
 
-fn run(day: i32) {
+fn run(day: i32, time: bool) {
+    let start = Instant::now();
     match day {
         1 => day1::main(),
         2 => day2::main(),
@@ -68,4 +70,6 @@ fn run(day: i32) {
         20 => day20::main(),
         other => { println!("Day {} not yet implemented 😅", other) }
     }
+    let duration = start.elapsed();
+    println!("Time: {} ms", duration.as_millis())
 }

@@ -71,5 +71,7 @@ fn run(day: i32, time: bool) {
         other => { println!("Day {} not yet implemented 😅", other) }
     }
     let duration = start.elapsed();
-    println!("Time: {} ms", duration.as_millis())
+    if time {
+        println!("Time: {} ms", duration.as_millis())
+    }
 }

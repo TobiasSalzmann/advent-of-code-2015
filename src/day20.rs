@@ -1,9 +1,4 @@
-use std::collections::HashMap;
-use std::mem;
-use std::str::FromStr;
-use itertools::{chain, Itertools};
-use pathfinding::prelude::astar;
-
+use itertools::{Itertools};
 use rayon::prelude::*;
 use crate::util;
 
@@ -21,7 +16,7 @@ fn mix(input: &mut Vec<(usize, i64)>) {
     }
 }
 
-fn move_value(mut vec: &mut Vec<(usize, i64)>, orig_i: usize) {
+fn move_value(vec: &mut Vec<(usize, i64)>, orig_i: usize) {
     let (i, el) = vec.iter().find_position(|el| el.0 == orig_i).unwrap();
     let (_, x) = el.clone();
     vec.remove(i);
@@ -52,7 +47,7 @@ fn grove_coordinates_encrypted(input: Vec<i64>, key: i64) -> i64 {
 
 #[cfg(test)]
 mod tests {
-    use crate::day20::{grove_coordinates, grove_coordinates_encrypted, mix, move_value};
+    use crate::day20::{grove_coordinates, grove_coordinates_encrypted, mix};
 
     #[test]
     fn should_mix_on_example() {

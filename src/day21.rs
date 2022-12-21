@@ -1,8 +1,8 @@
-use std::borrow::Borrow;
+
 use std::collections::HashMap;
-use std::mem;
+
 use std::str::FromStr;
-use itertools::{chain, Itertools};
+use itertools::{Itertools};
 use crate::day21::Expression::{Const, Div, Minus, Mul, Plus};
 use crate::util;
 

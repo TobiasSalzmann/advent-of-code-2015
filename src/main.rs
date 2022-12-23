@@ -20,6 +20,7 @@ mod day16;
 mod day19;
 mod day20;
 mod day21;
+mod day22;
 
 extern crate dotenv;
 extern crate core;
@@ -70,6 +71,7 @@ fn run(day: i32, time: bool) {
         19 => day19::main(),
         20 => day20::main(),
         21 => day21::main(),
+        22 => day22::main(),
         other => { println!("Day {} not yet implemented 😅", other) }
     }
     let duration = start.elapsed();

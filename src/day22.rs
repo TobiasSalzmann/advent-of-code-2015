@@ -331,7 +331,6 @@ impl From<&str> for Instruction {
 
 #[cfg(test)]
 mod tests {
-    use std::collections::HashMap;
     use crate::day22::Instruction::{Forward, Left, Right};
     use crate::day22::{cube_password, parse, password};
     use crate::day22::Tile::Rock;

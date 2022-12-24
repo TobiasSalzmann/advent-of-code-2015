@@ -7,17 +7,54 @@ pub fn main() {
     let input: Vec<String> = util::parse_strings("resources/day24.txt");
     let basin = parse(input);
 
-    println!("Day 24, Part 1: {:?}", minimum_rounds(basin));
-    // println!("Day 23, Part 2: {:?}", first_stable_round(initial_elves));
+    println!("Day 24, Part 1: {:?}", minimum_rounds(&basin));
+    println!("Day 24, Part 2: {:?}", minimum_rounds_part_2(&basin));
 }
 
-fn minimum_rounds(basin: Basin) -> usize {
+fn minimum_rounds_part_2(basin: &Basin) -> usize {
+    let initial = State { x: 0, y: -1, blizzard_cycle: 0 };
+    let empty_locations_by_cycle = generate_empty_locations_by_cycle(basin);
+
+    let (path, forward_cost) = dijkstra(
+        &initial,
+        |state| successors(state, &empty_locations_by_cycle, basin),
+        |s| is_exit_state(s, basin),
+    ).unwrap();
+
+    let (path, return_cost) = dijkstra(
+        path.last().unwrap(),
+        |state| successors(state, &empty_locations_by_cycle, basin),
+        |s| is_entrance_state(s),
+    ).unwrap();
+
+    let (_path, forward_again_cost) = dijkstra(
+        path.last().unwrap(),
+        |state| successors(state, &empty_locations_by_cycle, basin),
+        |s| is_exit_state(s, basin),
+    ).unwrap();
+
+    forward_cost + return_cost + forward_again_cost
+}
+
+fn minimum_rounds(basin: &Basin) -> usize {
     let initial = State {
         x: 0,
         y: -1,
         blizzard_cycle: 0,
     };
 
+    let empty_locations_by_cycle = generate_empty_locations_by_cycle(basin);
+
+    let (_path, cost) = dijkstra(
+        &initial,
+        |n| successors(n, &empty_locations_by_cycle, basin),
+        |s| is_exit_state(s, basin),
+    ).unwrap();
+
+    cost
+}
+
+fn generate_empty_locations_by_cycle(basin: &Basin) -> HashMap<i32, HashSet<(i32, i32)>> {
     let mut all_locations = HashSet::new();
     for x in 0..basin.width {
         for y in 0..basin.height {
@@ -25,7 +62,11 @@ fn minimum_rounds(basin: Basin) -> usize {
         }
     }
 
-    let empty_locations_by_cycle: HashMap<i32, HashSet<(i32, i32)>> = (0..(basin.width * basin.height))
+    let number_of_cycles = (1..)
+        .find(|n| n % basin.height == 0 && n % basin.width == 0)
+        .unwrap();
+
+    (0..number_of_cycles)
         .map(|n| {
             let mut empty_locations = all_locations.clone();
             for Blizzard { x, y, dx, dy } in &basin.blizzards {
@@ -34,19 +75,7 @@ fn minimum_rounds(basin: Basin) -> usize {
                 empty_locations.remove(&(new_x, new_y));
             }
             (n, empty_locations)
-        }).collect();
-
-    // for entry in empty_locations_by_cycle.iter()  {
-    //     println!("{:?}, {:?}", entry.0, entry.1)
-    // }
-
-    let result: (Vec<State>, usize) = dijkstra(
-        &initial,
-        |n| successors(n, &empty_locations_by_cycle, &basin),
-        |s| is_exit_state(s, &basin),
-    ).unwrap();
-
-    result.1
+        }).collect()
 }
 
 fn successors(state: &State, empty_locations_by_cycle: &HashMap<i32, HashSet<(i32, i32)>>, basin: &Basin) -> Vec<(State, usize)> {
@@ -138,7 +167,7 @@ struct Blizzard {
 
 #[cfg(test)]
 mod tests {
-    use crate::day24::{minimum_rounds, parse};
+    use crate::day24::{minimum_rounds, minimum_rounds_part_2, parse};
 
     #[test]
     fn should_solve_example() {
@@ -150,7 +179,20 @@ mod tests {
             "#<^v^^>#".to_string(),
             "######.#".to_string(),
         ];
-        assert_eq!(minimum_rounds(parse(input)), 18)
+        assert_eq!(minimum_rounds(&parse(input)), 18)
+    }
+
+    #[test]
+    fn should_solve_part_2_on_example() {
+        let input = vec![
+            "#.######".to_string(),
+            "#>>.<^<#".to_string(),
+            "#.<..<<#".to_string(),
+            "#>v.><>#".to_string(),
+            "#<^v^^>#".to_string(),
+            "######.#".to_string(),
+        ];
+        assert_eq!(minimum_rounds_part_2(&parse(input)), 54)
     }
 }
 

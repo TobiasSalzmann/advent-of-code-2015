@@ -28,7 +28,7 @@ fn minimum_rounds(basin: Basin) -> usize {
     let empty_locations_by_cycle: HashMap<i32, HashSet<(i32, i32)>> = (0..(basin.width * basin.height))
         .map(|n| {
             let mut empty_locations = all_locations.clone();
-            for Blizzard{x, y, dx, dy} in &basin.blizzards {
+            for Blizzard { x, y, dx, dy } in &basin.blizzards {
                 let new_x = (x + (n * dx)).rem_euclid(basin.width);
                 let new_y = (y + (n * dy)).rem_euclid(basin.height);
                 empty_locations.remove(&(new_x, new_y));
@@ -43,10 +43,10 @@ fn minimum_rounds(basin: Basin) -> usize {
     let result: (Vec<State>, usize) = dijkstra(
         &initial,
         |n| successors(n, &empty_locations_by_cycle, &basin),
-        |s| s.y == basin.height - 1 && s.x == basin.width - 1,
+        |s| is_exit_state(s, &basin),
     ).unwrap();
 
-    result.1 + 1
+    result.1
 }
 
 fn successors(state: &State, empty_locations_by_cycle: &HashMap<i32, HashSet<(i32, i32)>>, basin: &Basin) -> Vec<(State, usize)> {
@@ -60,15 +60,31 @@ fn successors(state: &State, empty_locations_by_cycle: &HashMap<i32, HashSet<(i3
         (state.x, state.y)
     ];
     neighbours.into_iter()
-        .filter(|p @ (x, y)| {
-            let is_origin = *x == 0 && *y == -1;
-            let in_bounds = *x >= 0 && *x < basin.width && *y >= 0 && *y < basin.height;
-            let is_empty = empty_locations_by_cycle
-                .get(&blizzard_cycle).unwrap().contains(p);
-            is_origin || (in_bounds && is_empty)
-        })
         .map(|(x, y)| (State { x, y, blizzard_cycle }, 1))
+        .filter(|(neighbour, _)| {
+            let is_empty = empty_locations_by_cycle
+                .get(&blizzard_cycle).unwrap()
+                .contains(&(neighbour.x, neighbour.y));
+            is_entrance_state(neighbour)
+                || is_exit_state(neighbour, basin)
+                || (is_in_bounds(neighbour, basin) && is_empty)
+        })
         .collect_vec()
+}
+
+fn is_exit_state(state: &State, basin: &Basin) -> bool {
+    state.x == basin.width - 1 && state.y == basin.height
+}
+
+fn is_entrance_state(state: &State) -> bool {
+    state.x == 0 && state.y == -1
+}
+
+fn is_in_bounds(state: &State, basin: &Basin) -> bool {
+    state.x >= 0
+        && state.x < basin.width
+        && state.y >= 0
+        && state.y < basin.height
 }
 
 fn parse(raw: Vec<String>) -> Basin {

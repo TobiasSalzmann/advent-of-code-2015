@@ -1,14 +1,11 @@
-use std::collections::{HashMap, HashSet};
 use std::str::FromStr;
 use itertools::{Itertools};
-use pathfinding::num_traits::Pow;
-use pathfinding::prelude::dijkstra;
 use crate::util;
 
 pub fn main() {
     let input: Vec<Snafu> = util::parse_from_strings("resources/day25.txt");
 
-    println!("Day 25, Part 1: {:?}", sum_snafus(input));
+    println!("Day 25, Part 1: {}", sum_snafus(input));
 }
 
 fn sum_snafus(snafus: Vec<Snafu>) -> String {
@@ -50,21 +47,11 @@ impl Snafu {
     }
 
     fn digit(&self, i: u32) -> Option<char> {
-        if i == 0 {
-            return match self.0 % 5 {
-                0 => Some('0'),
-                1 => Some('1'),
-                2 => Some('2'),
-                3 => Some('='),
-                4 => Some('-'),
-                _ => panic!()
-            };
-        }
 
-        let x = 5i128.pow(i);
-        let x_over_two = (x / 2) + 1;
-        let j = ((self.0 - x_over_two) / x) % 5;
-        if self.0 < x_over_two {
+        let power = 5i128.pow(i);
+        let adjustment = (power / 2) + 1;
+        let j = ((self.0 - adjustment) / power) % 5;
+        if self.0 < adjustment {
             return None;
         }
         return match j {

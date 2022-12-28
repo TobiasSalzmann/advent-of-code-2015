@@ -1,5 +1,6 @@
 mod util;
 mod day1;
+mod day2;
 
 extern crate dotenv;
 extern crate core;
@@ -30,6 +31,7 @@ fn run(day: i32, time: bool) {
     let start = Instant::now();
     match day {
         1 => day1::main(),
+        2 => day2::main(),
         other => { println!("Day {} not yet implemented 😅", other) }
     }
     let duration = start.elapsed();

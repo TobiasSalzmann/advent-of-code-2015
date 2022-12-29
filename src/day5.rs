@@ -1,6 +1,6 @@
-use std::str::FromStr;
-use itertools::{Itertools, repeat_n};
-use md5::Digest;
+
+use itertools::{Itertools};
+
 use crate::util;
 
 pub fn main() {

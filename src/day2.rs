@@ -23,7 +23,7 @@ fn amount_of_ribbon(packages: &Vec<Package>) -> u32 {
             .sorted()
             .collect_tuple()
             .unwrap();
-        (a + a + b + b + a * b * c)
+        a + a + b + b + a * b * c
     }).sum()
 }
 

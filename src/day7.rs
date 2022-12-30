@@ -10,7 +10,7 @@ pub fn main() {
     let input = util::parse_from_strings("resources/day7.txt");
 
     println!("Day 7, Part 1: {}", execute(&input));
-    // println!("Day 7, Part 2: {}", execute_2(&input));
+    println!("Day 7, Part 2: {}", execute_2(&input));
 }
 
 // fn execute(instructions: &Vec<Instruction>) -> u16 {
@@ -39,7 +39,14 @@ fn execute_2(instructions: &Vec<Instruction>) -> u16 {
     let v1 = mem.get("a").unwrap().clone();
     let mut mem2: HashMap<String, u16> = HashMap::new();
     let mut instructions2 = instructions.clone();
-    instructions2.push(Copy { from: ValueSource::Const(v1), to: "b".to_string() });
+    for i in instructions2.iter_mut() {
+        match i {
+            Copy { from, to } if to == "b" => {
+                *i = Copy { from: ValueSource::Const(v1), to: to.clone() }
+            }
+            _ => {}
+        }
+    }
     run_instructions(&instructions2, &mut mem2);
     mem2.get("a").unwrap().clone()
 }

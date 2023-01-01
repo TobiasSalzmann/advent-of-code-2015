@@ -22,6 +22,11 @@ pub fn parse_strings(file_path: &str) -> Vec<String> {
         .collect()
 }
 
+pub fn parse_string(file_path: &str) -> String {
+    let contents = fs::read_to_string(file_path).expect("File does not exists");
+    contents.trim().to_string()
+}
+
 pub fn parse_from_strings<T: FromStr>(file_path: &str) -> Vec<T> where <T as FromStr>::Err: Debug {
     let contents = fs::read_to_string(file_path).expect("File does not exists");
     contents.lines()
@@ -49,7 +54,7 @@ impl<T> Grid<T> {
             }
         }
 
-        let Bounds {min_x, max_x, min_y, max_y} = bounds(&inner);
+        let Bounds { min_x, max_x, min_y, max_y } = bounds(&inner);
 
         Grid {
             inner,
@@ -66,7 +71,7 @@ pub struct Bounds {
     pub min_x: i32,
     pub max_x: i32,
     pub min_y: i32,
-    pub max_y: i32
+    pub max_y: i32,
 }
 
 pub fn bounds<T>(inner: &HashMap<(i32, i32), T>) -> Bounds {

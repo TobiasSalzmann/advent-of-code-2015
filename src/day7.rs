@@ -41,7 +41,7 @@ fn execute_2(instructions: &Vec<Instruction>) -> u16 {
     let mut instructions2 = instructions.clone();
     for i in instructions2.iter_mut() {
         match i {
-            Copy { from, to } if to == "b" => {
+            Copy { from: _, to } if to == "b" => {
                 *i = Copy { from: ValueSource::Const(v1), to: to.clone() }
             }
             _ => {}

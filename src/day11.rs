@@ -1,9 +1,9 @@
-use std::collections::{HashMap, HashSet};
-use std::convert::identity;
-use std::fmt::format;
-use std::str::FromStr;
-use std::thread::current;
-use itertools::{iterate, Itertools, repeat_n};
+
+
+
+
+
+use itertools::{Itertools};
 use pathfinding::num_traits::pow;
 
 use crate::util;
@@ -62,7 +62,7 @@ fn to_password(x: &u128, letters: usize) -> String {
     let mut x = x.clone();
 
     for _ in 0..letters {
-        result.push(char::from_u32(('a' as u32 + ((x as u32) % 26))).unwrap());
+        result.push(char::from_u32('a' as u32 + ((x as u32) % 26)).unwrap());
         x = x / 26;
     }
     result.into_iter().rev().collect()

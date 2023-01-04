@@ -45,9 +45,8 @@ fn score(split: &Vec<i32>, ingredients: &Vec<Ingredient>) -> i32 {
 }
 
 fn count_calories(split: &Vec<i32>, ingredients: &Vec<Ingredient>) -> i32 {
-    let zipper = |(amount, ingredient)| amount * ingredient.calories;
     split.iter().zip_eq(ingredients.iter())
-        .map(zipper)
+        .map(|(amount, ingredient)| amount * ingredient.calories)
         .sum()
 }
 

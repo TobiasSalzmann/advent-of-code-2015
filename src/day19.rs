@@ -1,9 +1,6 @@
-use std::collections::{HashMap, HashSet};
 use itertools::Itertools;
 
 use crate::util;
-
-type Light = (i32, i32);
 
 pub fn main() {
     let input = util::parse_strings("resources/day19.txt");

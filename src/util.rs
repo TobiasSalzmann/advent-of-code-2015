@@ -16,6 +16,14 @@ pub fn parse_string(file_path: &str) -> String {
     contents.trim().to_string()
 }
 
+pub fn parse_from_string<T: FromStr>(file_path: &str) -> T {
+    let contents = fs::read_to_string(file_path).expect("File does not exists");
+    match contents.trim().parse() {
+        Ok(x) => x,
+        _ => panic!()
+    }
+}
+
 pub fn parse_from_strings<T: FromStr>(file_path: &str) -> Vec<T> where <T as FromStr>::Err: Debug {
     let contents = fs::read_to_string(file_path).expect("File does not exists");
     contents.lines()
